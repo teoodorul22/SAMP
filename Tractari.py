@@ -1,7 +1,6 @@
-import requests
+import cloudscraper
 import json
 import time
-from bs4 import BeautifulSoup
 import os
 from datetime import datetime
 
@@ -94,11 +93,9 @@ def send_initial_summary(member_data):
 def scrape_faction_data():
     """Scrape member data from the faction page based on the HTML structure provided."""
     try:
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-        }
+        scraper = cloudscraper.create_scraper()  # Cloudflare-aware session
 
-        response = requests.get(FACTION_PAGE_URL, headers=headers)
+        response = scraper.get(FACTION_PAGE_URL)
         if response.status_code != 200:
             print(f"[{datetime.now()}] Failed to load page. Status code: {response.status_code}")
             return None
@@ -194,7 +191,7 @@ def main():
     if not os.path.exists(DATA_FILE):
         print(f"[{datetime.now()}] Creating new data file")
         save_current_data({})
-    
+
     # First run - get initial data
     print(f"[{datetime.now()}] Getting initial faction data...")
     initial_data = scrape_faction_data()
