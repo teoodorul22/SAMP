@@ -1,1 +1,1 @@
-worker: python Tractari.py
+web: python Tractari.py
